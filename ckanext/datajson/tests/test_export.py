@@ -15,6 +15,7 @@ import ckan.config.middleware
 from ckan.common import config
 from ckan.tests.helpers import CKANTestApp, CKANTestClient
 
+
 class CKANZipTestApp(CKANTestApp):
     ''' Special Test App to allow Zip Files '''
     def test_client(self, use_cookies=True):

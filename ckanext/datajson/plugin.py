@@ -5,8 +5,8 @@ standard_library.install_aliases()
 import ckan.plugins as p
 import re
 
-
 from . import blueprint
+
 
 class DataJsonPlugin(p.SingletonPlugin):
     p.implements(p.interfaces.IConfigurer)
