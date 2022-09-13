@@ -1,7 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import zip
-from builtins import str
 from ckan import model
 from ckan import plugins as p
 from ckan.model import Session, Package

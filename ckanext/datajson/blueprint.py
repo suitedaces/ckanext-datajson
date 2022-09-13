@@ -1,5 +1,4 @@
 
-from builtins import str
 import io
 import json
 import logging
