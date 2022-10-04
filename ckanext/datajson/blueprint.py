@@ -328,8 +328,8 @@ def write_zip(data, error=None, errors_json=None, zip_name='data'):
 
 def validator():
     # Validates that a URL is a good data.json file.
-    if request.method == "POST" and "url" in request.POST and request.POST["url"].strip() != "":
-        c.source_url = request.POST["url"]
+    if request.method == "POST" and request.form.get('url').strip() != "":
+        c.source_url = request.form.get('url')
         c.errors = []
 
         import urllib.request

@@ -14,7 +14,7 @@
 	
       <form method="post">
       	<label for="validate_url">Address of data.json file</label>
-      	<input id="validate_url" type="url" name="url" value="{% if c.source_url %}{{ c.source_url }}{% else %}http://hub.healthdata.gov/data.json{% endif %}" style="width: 90%; display: block;"/>
+      	<input id="validate_url" type="url" name="url" value="{% if c.source_url %}{{ c.source_url }}{% else %}https://open.gsa.gov/data.json{% endif %}" style="width: 90%; display: block;"/>
       	<input type="submit" value="Go >"/>
       </form>
       
