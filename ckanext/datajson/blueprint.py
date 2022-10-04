@@ -353,7 +353,7 @@ def validator():
 
         if body:
             try:
-                do_validation(body, c.errors)
+                do_validation(body, c.errors, {})
             except Exception as e:
                 c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
             if len(c.errors) == 0:
