@@ -402,4 +402,5 @@ datapusher.add_url_rule('/organization/<org_id>/unredacted.json',
 datapusher.add_url_rule('/organization/<org_id>/draft.json',
                         view_func=generate_draft)
 datapusher.add_url_rule("/pod/validate",
+                        methods=['GET', 'POST'],
                         view_func=validator)
