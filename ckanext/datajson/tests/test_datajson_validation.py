@@ -31,7 +31,10 @@ class TestDataJsonValidation(object):
     def test_data_json_valid(self, app):
         ''' Test that a valid data.json passes '''
 
-        res = app.post('/pod/validate', data={'url': 'https://raw.githubusercontent.com/GSA/ckanext-datajson/main/ckanext/datajson/tests/datajson-samples/collection-1-parent-2-children.data.json'})
+        res = app.post('/pod/validate', data={
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/main/ckanext/datajson/tests/datajson-samples/'
+                    'collection-1-parent-2-children.data.json')
+        })
 
         assert res.status_code == 200
         assert 'No Errors' in res.body
@@ -49,7 +52,10 @@ class TestDataJsonValidation(object):
     def test_data_json_invalid(self, app):
         ''' Test that an invalid data.json fails '''
 
-        res = app.post('/pod/validate', data={'url': 'https://raw.githubusercontent.com/GSA/ckanext-datajson/f8ff81f9dfd2eaa89d51efb30d06cb7b25416672/ckanext/datajson/tests/datajson-samples/bad.data.json'})
+        res = app.post('/pod/validate', data={
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/f8ff81f9dfd2eaa89d51efb30d06cb7b25416672/ckanext/'
+                    'datajson/tests/datajson-samples/bad.data.json')
+        })
 
         assert res.status_code == 200
         assert 'Missing Required Fields' in res.body
