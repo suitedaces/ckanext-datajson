@@ -29,7 +29,7 @@ services:
       - ./setup.py:/srv/app/setup.py
       - /etc/timezone:/etc/timezone:ro
   db:
-    image: ckan/ckan-postgres-dev:${CKAN_VERSION}
+    image: ckan/ckan-postgres-dev:${SERVICES_VERSION}
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -44,4 +44,4 @@ services:
   redis:
     image: redis
   solr:
-    image: ckan/ckan-solr-dev:${CKAN_VERSION}
+    image: ckan/ckan-solr-dev:${SERVICES_VERSION}
