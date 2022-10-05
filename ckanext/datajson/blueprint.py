@@ -331,8 +331,8 @@ def validator():
     if request.method == "POST":
         c.errors = []
         try:
-            if request.form.get('url').strip() != "":
-                c.source_url = request.form.get('url').strip()
+            assert request.form.get('url').strip() != ""
+            c.source_url = request.form.get('url').strip()
 
             import urllib.request
             import urllib.parse
@@ -361,8 +361,11 @@ def validator():
                 if len(c.errors) == 0:
                     c.errors.append(("No Errors", ["Great job!"]))
         except AttributeError:
+            c.source_url = "No URL Provided"
             c.errors.append(("Bad Request", ["Please send a post request with 'url' in the payload"]))
-            print(c.errors)
+        except AssertionError:
+            c.source_url = ""
+            c.errors.append(("URL is empty.", ["Please specify a URL in the box above."]))
 
     return render('datajsonvalidator.html')
 
