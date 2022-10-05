@@ -20,7 +20,9 @@ jobs:
       matrix:
         ckan-version: [2.9.5, 2.9]
         include:
-        - ckan-version: [2.9.5, 2.9]
+        - ckan-version: 2.9.5
+          services-version: 2.9
+        - ckan-version: 2.9
           services-version: 2.9
       fail-fast: false
 
