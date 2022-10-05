@@ -1,5 +1,5 @@
 name: Tests
-on: [pull_request, pull]
+on: [pull_request, push]
 env:
   CODE_COVERAGE_THRESHOLD_REQUIRED: 35
 jobs:
