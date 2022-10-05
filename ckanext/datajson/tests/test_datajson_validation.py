@@ -77,3 +77,21 @@ class TestDataJsonValidation(object):
         assert res.status_code == 200
         assert 'Invalid JSON' in res.body
         assert 'The file does not meet basic JSON syntax requirements' in res.body
+
+    def test_data_json_invalid(self, app):
+        ''' Test that an invalid data.json fails '''
+
+        res = app.post('/pod/validate', data={'url':'https://raw.githubusercontent.com/GSA/ckanext-datajson/f8ff81f9dfd2eaa89d51efb30d06cb7b25416672/ckanext/datajson/tests/datajson-samples/bad.data.json'})
+
+        assert res.status_code == 200
+        assert 'Missing Required Fields' in res.body
+        assert 'The &#39;accessLevel&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;bureauCode&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;contactPoint&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;description&#39; field is missing. (2 locations)' in res.body
+        assert 'The &#39;identifier&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;keyword&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;modified&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;programCode&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;publisher&#39; field is missing. (1 locations)' in res.body
+        assert 'The &#39;title&#39; field is missing. (1 locations)' in res.body
