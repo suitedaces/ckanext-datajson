@@ -328,36 +328,41 @@ def write_zip(data, error=None, errors_json=None, zip_name='data'):
 
 def validator():
     # Validates that a URL is a good data.json file.
-    if request.method == "POST" and request.form.get('url').strip() != "":
-        c.source_url = request.form.get('url')
+    if request.method == "POST":
         c.errors = []
-
-        import urllib.request
-        import urllib.parse
-        import urllib.error
-        import json
-        from .datajsonvalidator import do_validation
-
-        body = None
         try:
-            body = json.load(urllib.request.urlopen(c.source_url))
-        except IOError as e:
-            c.errors.append(("Error Loading File", ["The address could not be loaded: " + str(e)]))
-        except ValueError as e:
-            c.errors.append(("Invalid JSON", ["The file does not meet basic JSON syntax requirements: " + str(
-                e) + ". Try using JSONLint.com."]))
-        except Exception as e:
-            c.errors.append((
-                "Internal Error",
-                ["Something bad happened while trying to load and parse the file: " + str(e)]))
+            if request.form.get('url').strip() != "":
+                c.source_url = request.form.get('url').strip()
 
-        if body:
+            import urllib.request
+            import urllib.parse
+            import urllib.error
+            import json
+            from .datajsonvalidator import do_validation
+
+            body = None
             try:
-                do_validation(body['dataset'], c.errors, set())
+                body = json.load(urllib.request.urlopen(c.source_url))
+            except IOError as e:
+                c.errors.append(("Error Loading File", ["The address could not be loaded: " + str(e)]))
+            except ValueError as e:
+                c.errors.append(("Invalid JSON", ["The file does not meet basic JSON syntax requirements: " + str(
+                    e) + ". Try using JSONLint.com."]))
             except Exception as e:
-                c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
-            if len(c.errors) == 0:
-                c.errors.append(("No Errors", ["Great job!"]))
+                c.errors.append((
+                    "Internal Error",
+                    ["Something bad happened while trying to load and parse the file: " + str(e)]))
+
+            if body:
+                try:
+                    do_validation(body['dataset'], c.errors, set())
+                except Exception as e:
+                    c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
+                if len(c.errors) == 0:
+                    c.errors.append(("No Errors", ["Great job!"]))
+        except AttributeError:
+            c.errors.append(("Bad Request", ["Please send a post request with 'url' in the payload"]))
+            print(c.errors)
 
     return render('datajsonvalidator.html')
 
