@@ -69,3 +69,22 @@ class TestDataJsonValidation(object):
         assert 'The &#39;programCode&#39; field is missing. (1 locations)' in res.body
         assert 'The &#39;publisher&#39; field is missing. (1 locations)' in res.body
         assert 'The &#39;title&#39; field is missing. (1 locations)' in res.body
+
+    def test_data_json_unresolvable(self, app):
+
+        res = app.post('/pod/validate', data={
+            'url': 'http://some.unresolvable.hostname.fer-reals/data.json'
+        })
+
+        assert res.status_code == 200
+        assert 'Error Loading File' in res.body
+        assert 'The address could not be loaded' in res.body
+
+        res = app.post('/pod/validate', data={
+            'url': 'https://www.google.com:443/data.json'
+        })
+
+        assert res.status_code == 200
+        assert 'Error Loading File' in res.body
+        assert 'The address could not be loaded' in res.body
+        assert 'HTTP Error 404' in res.body
