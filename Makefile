@@ -5,7 +5,7 @@ build: ## Build the docker containers
 	CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) build
 
 lint: ## Lint the code
-	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f docker-compose.yml run --rm app flake8 . --count --show-source --statistics --exclude ckan
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f docker-compose.yml run --rm app flake8 ckanext --count --show-source --statistics --exclude ckan
 
 clean: ## Clean workspace and containers
 	find . -name *.pyc -delete
