@@ -53,8 +53,8 @@ class TestDataJsonValidation(object):
         ''' Test that an invalid data.json fails '''
 
         res = app.post('/pod/validate', data={
-            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/f8ff81f9dfd2eaa89d51efb30d06cb7b25416672/ckanext/'
-                    'datajson/tests/datajson-samples/bad.data.json')
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
+                    'tests/datajson-samples/bad.data.json')
         })
 
         assert res.status_code == 200
