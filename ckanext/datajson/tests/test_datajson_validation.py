@@ -90,7 +90,6 @@ class TestDataJsonValidation(object):
         assert 'describedBy has a problem' in res.body
         assert '&#39;data.gov&#39; is not a &#39;uri&#39;.'
 
-
     def test_data_json_unresolvable(self, app):
 
         res = app.post('/pod/validate', data={
