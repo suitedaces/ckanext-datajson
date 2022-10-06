@@ -433,6 +433,6 @@ datapusher.add_url_rule('/organization/<org_id>/unredacted.json',
                         view_func=generate_unredacted)
 datapusher.add_url_rule('/organization/<org_id>/draft.json',
                         view_func=generate_draft)
-validator_bp.add_url_rule("/pod/validate",
+validator_bp.add_url_rule("/dcat-us/validator",
                           methods=['GET', 'POST'],
                           view_func=validator)
