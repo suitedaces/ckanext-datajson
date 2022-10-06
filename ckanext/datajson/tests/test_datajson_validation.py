@@ -84,10 +84,11 @@ class TestDataJsonValidation(object):
         assert 'The root of data.json has a problem' in res.body
         assert '&#39;conformsTo&#39; is a required property.' in res.body
         assert '@context has a problem' in res.body
-        assert '&#39;Nothing&#39; is not a &#39;uri&#39;.'
+        assert '&#39;project-open-data.cio.gov/v1.1/schema&#39; is not a &#39;uri&#39;.' in res.body
         assert '@type has a problem' in res.body
         assert '&#39;dcat:Test&#39; is not one of [&#39;dcat:Catalog&#39;].' in res.body
         assert 'describedBy has a problem' in res.body
+        assert '&#39;data.gov&#39; is not a &#39;uri&#39;.'
 
 
     def test_data_json_unresolvable(self, app):
