@@ -358,13 +358,20 @@ def validator():
                     catalog_validator = get_validator(level='catalog.json')
                     errors = sorted(catalog_validator.iter_errors(body), key=lambda e: e.path)
 
+                    grouped_errors = {}
                     for error in errors:
+                        key = tuple((error.absolute_path[0].capitalize(), error.absolute_path[1]))
+                        if key in grouped_errors.keys():
+                            grouped_errors[key].append(error)
+                        else:
+                            grouped_errors[key] = [error]
+                    for path, errors in grouped_errors.items():
                         # print(error)
                         print("....................................")
                         print(error.absolute_path)
                         c.errors.append((
-                            '%s %d has a problem' % (error.absolute_path[0].capitalize(), error.absolute_path[1]),
-                            [error.message]))
+                            '%s %d has a problem' % (path[0].capitalize(), path[1]),
+                            [e.message for e in errors]))
                         # print(error.instance)
                         print(error.message)
                         for suberror in sorted(error.context, key=lambda e: e.schema_path):
