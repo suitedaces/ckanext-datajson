@@ -153,7 +153,7 @@ def is_redacted(value):
     return isinstance(value, str) and REDACTED_REGEX.match(value)
 
 
-def get_validator(schema_type="federal-v1.1"):
+def get_validator(schema_type="federal-v1.1", level='dataset.json'):
     """
     Get POD json validator object
     :param schema_type: str
@@ -162,7 +162,7 @@ def get_validator(schema_type="federal-v1.1"):
     import os
     from jsonschema import Draft4Validator, FormatChecker
 
-    schema_path = os.path.join(os.path.dirname(__file__), 'pod_schema', schema_type, 'dataset.json')
+    schema_path = os.path.join(os.path.dirname(__file__), 'pod_schema', schema_type, level)
     with open(schema_path, 'r') as schema:
         schema = json.loads(schema.read())
         return Draft4Validator(schema, format_checker=FormatChecker())

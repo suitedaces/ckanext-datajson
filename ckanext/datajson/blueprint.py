@@ -354,8 +354,20 @@ def validator():
 
             if body:
                 try:
-                    # TODO: VALIDATION FUNCTION
-                    pass
+                    # Validate catalog-level
+                    catalog_validator = get_validator(level='catalog.json')
+                    errors = sorted(catalog_validator.iter_errors(body), key=lambda e: e.path)
+
+                    for error in errors:
+                        # print(error)
+                        print("....................................")
+                        print(error.absolute_path)
+                        c.errors.append(('%s %d has a problem' % (error.absolute_path[0].capitalize(), error.absolute_path[1]), [error.message]))
+                        # print(error.instance)
+                        print(error.message)
+                        for suberror in sorted(error.context, key=lambda e: e.schema_path):
+                            print(list(suberror.schema_path), suberror.message, sep=", ")
+
                 except Exception as e:
                     c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
                 if len(c.errors) == 0:
