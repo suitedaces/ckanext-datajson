@@ -338,7 +338,6 @@ def validator():
             import urllib.parse
             import urllib.error
             import json
-            from .datajsonvalidator import do_validation
 
             body = None
             try:
@@ -355,7 +354,8 @@ def validator():
 
             if body:
                 try:
-                    do_validation(body['dataset'], c.errors, set())
+                    # TODO: VALIDATION FUNCTION
+                    pass
                 except Exception as e:
                     c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
                 if len(c.errors) == 0:

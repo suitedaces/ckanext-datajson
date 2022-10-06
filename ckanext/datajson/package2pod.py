@@ -174,31 +174,11 @@ class Package2Pod(object):
                     or dataset_dict.get('dataQuality') == "False":
                 dataset_dict['dataQuality'] = False
 
-            errors = []
-            try:
-                from .datajsonvalidator import do_validation
-                do_validation([dict(dataset_dict)], errors, Package2Pod.seen_identifiers)
-            except Exception as e:
-                errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
-            if len(errors) > 0:
-                for error in errors:
-                    log.warn(error)
-
-                try:
-                    currentPackageOrg
-                except NameError:
-                    currentPackageOrg = 'unknown'
-
-                errors_dict = OrderedDict([
-                    ('id', pkg.get('id')),
-                    ('name', Package2Pod.filter(pkg.get('name'))),
-                    ('title', Package2Pod.filter(pkg.get('title'))),
-                    ('organization', Package2Pod.filter(currentPackageOrg)),
-                    ('errors', errors),
-                ])
-
-                return errors_dict
-
+            # WARNING: Validation was removed from here
+            #   Previously, there was a `do_validation` function that was an
+            #   old implementation of DCAT-US Metadata Schema validation.
+            #   It was determined that this was not necessary anymore.
+            # It may be necessary to add in the replacement in the future.
             return dataset_dict
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
