@@ -1,6 +1,6 @@
 {
-  "describedBy": "Nothing",
-  "@context": "Nothing",
+  "describedBy": "data.gov",
+  "@context": "project-open-data.cio.gov/v1.1/schema",
   "@type": "dcat:Test",
   "dataset": [
     {
