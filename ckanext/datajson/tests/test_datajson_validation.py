@@ -20,7 +20,7 @@ class TestDataJsonPluginRoute(object):
     def test_data_json_validator_route(self, app):
         ''' Test that route returns 404 '''
 
-        res = app.get('/pod/validate')
+        res = app.get('/dcat-us/validator')
         assert res.status_code == 404
 
 
@@ -30,7 +30,7 @@ class TestDataJsonValidation(object):
     def test_data_json_validator_route(self, app):
         ''' Test that route returns 200 '''
 
-        res = app.get('/pod/validate')
+        res = app.get('/dcat-us/validator')
 
         assert res.status_code == 200
         assert 'Validate a DCAT-US /data.json File' in res.body
@@ -38,13 +38,13 @@ class TestDataJsonValidation(object):
     def test_data_json_without_url(self, app):
         ''' Test that a valid data.json passes '''
 
-        res = app.post('/pod/validate')
+        res = app.post('/dcat-us/validator')
 
         assert res.status_code == 200
         assert 'Bad Request' in res.body
         assert 'Please send a post request with &#39;url&#39; in the payload' in res.body
 
-        res = app.post('/pod/validate', data={'url2': 'data.gov'})
+        res = app.post('/dcat-us/validator', data={'url2': 'data.gov'})
 
         assert res.status_code == 200
         assert 'Bad Request' in res.body
@@ -53,7 +53,7 @@ class TestDataJsonValidation(object):
     def test_data_json_valid(self, app):
         ''' Test that a valid data.json passes '''
 
-        res = app.post('/pod/validate', data={
+        res = app.post('/dcat-us/validator', data={
             'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/main/ckanext/datajson/tests/datajson-samples/'
                     'collection-1-parent-2-children.data.json')
         })
@@ -65,7 +65,7 @@ class TestDataJsonValidation(object):
     def test_data_json_bad_link(self, app):
         ''' Test that a bad link fails '''
 
-        res = app.post('/pod/validate', data={'url': 'data.gov'})
+        res = app.post('/dcat-us/validator', data={'url': 'data.gov'})
 
         assert res.status_code == 200
         assert 'Invalid JSON' in res.body
@@ -74,7 +74,7 @@ class TestDataJsonValidation(object):
     def test_data_json_missing_dataset_fields(self, app):
         ''' Test that an invalid data.json that is missing dataset fields fails '''
 
-        res = app.post('/pod/validate', data={
+        res = app.post('/dcat-us/validator', data={
             'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
                     'tests/datajson-samples/missing-dataset-fields.data.json')
         })
@@ -97,7 +97,7 @@ class TestDataJsonValidation(object):
     def test_data_json_missing_catalog_fields(self, app):
         ''' Test that an invalid data.json that is missing catalog fields fails '''
 
-        res = app.post('/pod/validate', data={
+        res = app.post('/dcat-us/validator', data={
             'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
                     'tests/datajson-samples/missing-catalog.data.json')
         })
@@ -114,7 +114,7 @@ class TestDataJsonValidation(object):
 
     def test_data_json_unresolvable(self, app):
 
-        res = app.post('/pod/validate', data={
+        res = app.post('/dcat-us/validator', data={
             'url': 'http://some.unresolvable.hostname.fer-reals/data.json'
         })
 
@@ -122,7 +122,7 @@ class TestDataJsonValidation(object):
         assert 'Error Loading File' in res.body
         assert 'The address could not be loaded' in res.body
 
-        res = app.post('/pod/validate', data={
+        res = app.post('/dcat-us/validator', data={
             'url': 'https://www.google.com:443/data.json'
         })
 
