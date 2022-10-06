@@ -49,8 +49,8 @@ class TestDataJsonValidation(object):
         assert 'Invalid JSON' in res.body
         assert 'The file does not meet basic JSON syntax requirements' in res.body
 
-    def test_data_json_invalid(self, app):
-        ''' Test that an invalid data.json fails '''
+    def test_data_json_missing_dataset_fields(self, app):
+        ''' Test that an invalid data.json that is missing dataset fields fails '''
 
         res = app.post('/pod/validate', data={
             'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
@@ -58,7 +58,7 @@ class TestDataJsonValidation(object):
         })
 
         assert res.status_code == 200
-        assert 'Dataset 0 has a problem' in res.body
+        assert 'Dataset ➡ 0 has a problem' in res.body
         assert '&#39;accessLevel&#39; is a required property.' in res.body
         assert '&#39;bureauCode&#39; is a required property.' in res.body
         assert '&#39;contactPoint&#39; is a required property.' in res.body
@@ -69,8 +69,26 @@ class TestDataJsonValidation(object):
         assert '&#39;programCode&#39; is a required property.' in res.body
         assert '&#39;publisher&#39; is a required property.' in res.body
         assert '&#39;title&#39; is a required property.' in res.body
-        assert 'Dataset 1 has a problem' in res.body
+        assert 'Dataset ➡ 1 has a problem' in res.body
         assert '&#39;description&#39; is a required property.' in res.body
+
+    def test_data_json_missing_catalog_fields(self, app):
+        ''' Test that an invalid data.json that is missing catalog fields fails '''
+
+        res = app.post('/pod/validate', data={
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
+                    'tests/datajson-samples/missing-catalog.data.json')
+        })
+
+        assert res.status_code == 200
+        assert 'The root of data.json has a problem' in res.body
+        assert '&#39;conformsTo&#39; is a required property.' in res.body
+        assert '@context has a problem' in res.body
+        assert '&#39;Nothing&#39; is not a &#39;uri&#39;.'
+        assert '@type has a problem' in res.body
+        assert '&#39;dcat:Test&#39; is not one of [&#39;dcat:Catalog&#39;].' in res.body
+        assert 'describedBy has a problem' in res.body
+
 
     def test_data_json_unresolvable(self, app):
 

@@ -369,7 +369,7 @@ def validator():
                         if error.absolute_path == deque([]):
                             key = "The root of data.json"
                         else:
-                            key = " --> ".join([str(p) for p in error.absolute_path])
+                            key = " ➡ ".join([str(p).capitalize() if p == 'dataset' else str(p) for p in error.absolute_path])
                         if key in grouped_errors.keys():
                             grouped_errors[key].append(error)
                         else:
