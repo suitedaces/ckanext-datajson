@@ -338,6 +338,7 @@ def validator():
             import urllib.parse
             import urllib.error
             import json
+            from collections import deque
 
             body = None
             try:
@@ -360,20 +361,23 @@ def validator():
 
                     grouped_errors = {}
                     for error in errors:
-                        key = tuple((error.absolute_path[0].capitalize(), error.absolute_path[1]))
+                        # print(error)
+                        print("....................................")
+                        print(error.absolute_path)
+                        # print(error.instance)
+                        print(error.message)
+                        if error.absolute_path == deque([]):
+                            key = "The root of data.json"
+                        else:
+                            key = " --> ".join([str(p) for p in error.absolute_path])
                         if key in grouped_errors.keys():
                             grouped_errors[key].append(error)
                         else:
                             grouped_errors[key] = [error]
                     for path, errors in grouped_errors.items():
-                        # print(error)
-                        print("....................................")
-                        print(error.absolute_path)
                         c.errors.append((
-                            '%s %d has a problem' % (path[0].capitalize(), path[1]),
+                            '%s has a problem' % path,
                             ['%s.' % e.message for e in errors]))
-                        # print(error.instance)
-                        print(error.message)
                         for suberror in sorted(error.context, key=lambda e: e.schema_path):
                             print(list(suberror.schema_path), suberror.message, sep=", ")
 
