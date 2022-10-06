@@ -371,7 +371,7 @@ def validator():
                         print(error.absolute_path)
                         c.errors.append((
                             '%s %d has a problem' % (path[0].capitalize(), path[1]),
-                            [e.message for e in errors]))
+                            ['%s.' % e.message for e in errors]))
                         # print(error.instance)
                         print(error.message)
                         for suberror in sorted(error.context, key=lambda e: e.schema_path):

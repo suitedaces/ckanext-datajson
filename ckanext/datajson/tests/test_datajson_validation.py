@@ -54,21 +54,23 @@ class TestDataJsonValidation(object):
 
         res = app.post('/pod/validate', data={
             'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
-                    'tests/datajson-samples/bad.data.json')
+                    'tests/datajson-samples/missing-dataset-fields.data.json')
         })
 
         assert res.status_code == 200
-        assert 'Missing Required Fields' in res.body
-        assert 'The &#39;accessLevel&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;bureauCode&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;contactPoint&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;description&#39; field is missing. (2 locations)' in res.body
-        assert 'The &#39;identifier&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;keyword&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;modified&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;programCode&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;publisher&#39; field is missing. (1 locations)' in res.body
-        assert 'The &#39;title&#39; field is missing. (1 locations)' in res.body
+        assert 'Dataset 0 has a problem' in res.body
+        assert '&#39;accessLevel&#39; is a required property.' in res.body
+        assert '&#39;bureauCode&#39; is a required property.' in res.body
+        assert '&#39;contactPoint&#39; is a required property.' in res.body
+        assert '&#39;description&#39; is a required property.' in res.body
+        assert '&#39;identifier&#39; is a required property.' in res.body
+        assert '&#39;keyword&#39; is a required property.' in res.body
+        assert '&#39;modified&#39; is a required property.' in res.body
+        assert '&#39;programCode&#39; is a required property.' in res.body
+        assert '&#39;publisher&#39; is a required property.' in res.body
+        assert '&#39;title&#39; is a required property.' in res.body
+        assert 'Dataset 1 has a problem' in res.body
+        assert '&#39;description&#39; is a required property.' in res.body
 
     def test_data_json_unresolvable(self, app):
 
