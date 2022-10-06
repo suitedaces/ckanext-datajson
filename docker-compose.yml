@@ -14,7 +14,7 @@ services:
       CKAN_SOLR_URL: http://solr:8983/solr/ckan
       CKAN_REDIS_URL: redis://redis:6379/1
       CKAN_DATAPUSHER_URL: http://localhost:8080/  # datapusher is not really enabled
-      CKAN__PLUGINS: datajson harvest datajson_harvest
+      CKAN__PLUGINS: datajson harvest datajson_validator datajson_harvest
       PYTHONDONTWRITEBYTECODE: 1
     ports:
       - "5000:5000"

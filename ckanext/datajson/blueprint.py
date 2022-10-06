@@ -19,8 +19,7 @@ from .package2pod import Package2Pod
 
 
 datapusher = Blueprint('datajson', __name__)
-
-
+validator_bp = Blueprint('datajsonvalidator', __name__)
 logger = logging.getLogger(__name__)
 draft4validator = get_validator()
 _errors_json = []
@@ -434,6 +433,6 @@ datapusher.add_url_rule('/organization/<org_id>/unredacted.json',
                         view_func=generate_unredacted)
 datapusher.add_url_rule('/organization/<org_id>/draft.json',
                         view_func=generate_draft)
-datapusher.add_url_rule("/pod/validate",
-                        methods=['GET', 'POST'],
-                        view_func=validator)
+validator_bp.add_url_rule("/pod/validate",
+                          methods=['GET', 'POST'],
+                          view_func=validator)

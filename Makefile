@@ -15,7 +15,7 @@ test: ## Run tests in a new container
 	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) run --rm app ./test.sh
 
 up: ## Start the containers
-	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) up
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) up app
 
 
 .DEFAULT_GOAL := help
