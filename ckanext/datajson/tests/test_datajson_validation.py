@@ -1,8 +1,30 @@
 import logging
+import pytest
+
+import ckan.plugins
+
 
 log = logging.getLogger(__name__)
 
 
+@pytest.mark.ckan_config("ckan.plugins", "datajson datajson_harvest")
+class TestDataJsonPluginRoute(object):
+
+    def setup_method(self):
+        if ckan.plugins.plugin_loaded('datajson_validator'):
+            ckan.plugins.unload('datajson_validator')
+
+    def test_plugin_not_loaded(self):
+        assert not ckan.plugins.plugin_loaded('datajson_validator')
+
+    def test_data_json_validator_route(self, app):
+        ''' Test that route returns 404 '''
+
+        res = app.get('/pod/validate')
+        assert res.status_code == 404
+
+
+@pytest.mark.ckan_config("ckan.plugins", "datajson_validator")
 class TestDataJsonValidation(object):
 
     def test_data_json_validator_route(self, app):
