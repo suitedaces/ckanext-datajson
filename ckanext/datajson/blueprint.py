@@ -360,11 +360,6 @@ def validator():
 
                     grouped_errors = {}
                     for error in errors:
-                        # print(error)
-                        print("....................................")
-                        print(error.absolute_path)
-                        # print(error.instance)
-                        print(error.message)
                         if error.absolute_path == deque([]):
                             key = "The root of data.json"
                         else:
@@ -377,8 +372,6 @@ def validator():
                         c.errors.append((
                             '%s has a problem' % path,
                             ['%s.' % e.message for e in errors]))
-                        for suberror in sorted(error.context, key=lambda e: e.schema_path):
-                            print(list(suberror.schema_path), suberror.message, sep=", ")
 
                 except Exception as e:
                     c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))

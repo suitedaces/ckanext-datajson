@@ -75,7 +75,7 @@ class TestDataJsonValidation(object):
         ''' Test that an invalid data.json that is missing dataset fields fails '''
 
         res = app.post('/dcat-us/validator', data={
-            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/main/ckanext/datajson/'
                     'tests/datajson-samples/missing-dataset-fields.data.json')
         })
 
@@ -98,7 +98,7 @@ class TestDataJsonValidation(object):
         ''' Test that an invalid data.json that is missing catalog fields fails '''
 
         res = app.post('/dcat-us/validator', data={
-            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/datajson-validator/ckanext/datajson/'
+            'url': ('https://raw.githubusercontent.com/GSA/ckanext-datajson/main/ckanext/datajson/'
                     'tests/datajson-samples/missing-catalog.data.json')
         })
 
