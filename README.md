@@ -12,7 +12,7 @@ Plugin `datajson` provides a harvester to import datasets from other
 remote /data.json files. See below for setup instructions.
 
 And the plugin also provides a new view to validate /data.json files
-at http://ckanhostname/pod/validate.
+at http://ckanhostname/dcat-us/validator.
 
 
 ## Features
