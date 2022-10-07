@@ -6,6 +6,7 @@ ckanext_datajson.egg-info
 ckanext/datajson/export_map/*.map.json
 .idea
 .vscode/
+*.swp
 
 
 draft_data.json

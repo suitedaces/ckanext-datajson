@@ -19,8 +19,7 @@ from .package2pod import Package2Pod
 
 
 datapusher = Blueprint('datajson', __name__)
-
-
+validator_bp = Blueprint('datajsonvalidator', __name__)
 logger = logging.getLogger(__name__)
 draft4validator = get_validator()
 _errors_json = []
@@ -328,36 +327,69 @@ def write_zip(data, error=None, errors_json=None, zip_name='data'):
 
 def validator():
     # Validates that a URL is a good data.json file.
-    if request.method == "POST" and "url" in request.POST and request.POST["url"].strip() != "":
-        c.source_url = request.POST["url"]
+    if request.method == "POST":
         c.errors = []
-
-        import urllib.request
-        import urllib.parse
-        import urllib.error
-        import json
-        from .datajsonvalidator import do_validation
-
-        body = None
         try:
-            body = json.load(urllib.request.urlopen(c.source_url))
-        except IOError as e:
-            c.errors.append(("Error Loading File", ["The address could not be loaded: " + str(e)]))
-        except ValueError as e:
-            c.errors.append(("Invalid JSON", ["The file does not meet basic JSON syntax requirements: " + str(
-                e) + ". Try using JSONLint.com."]))
-        except Exception as e:
-            c.errors.append((
-                "Internal Error",
-                ["Something bad happened while trying to load and parse the file: " + str(e)]))
+            assert request.form.get('url').strip() != ""
+            c.source_url = request.form.get('url').strip()
 
-        if body:
+            import urllib.request
+            import urllib.parse
+            import urllib.error
+            import json
+            from collections import deque
+
+            body = None
             try:
-                do_validation(body, c.errors)
+                body = json.load(urllib.request.urlopen(c.source_url))
+            except IOError as e:
+                c.errors.append(("Error Loading File", ["The address could not be loaded: " + str(e)]))
+            except ValueError as e:
+                c.errors.append(("Invalid JSON", ["The file does not meet basic JSON syntax requirements: " + str(
+                    e) + ". Try using JSONLint.com."]))
             except Exception as e:
-                c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
-            if len(c.errors) == 0:
-                c.errors.append(("No Errors", ["Great job!"]))
+                c.errors.append((
+                    "Internal Error",
+                    ["Something bad happened while trying to load and parse the file: " + str(e)]))
+
+            if body:
+                try:
+                    # Validate catalog-level
+                    catalog_validator = get_validator(level='catalog.json')
+                    errors = sorted(catalog_validator.iter_errors(body), key=lambda e: e.path)
+
+                    grouped_errors = {}
+                    for error in errors:
+                        # print(error)
+                        print("....................................")
+                        print(error.absolute_path)
+                        # print(error.instance)
+                        print(error.message)
+                        if error.absolute_path == deque([]):
+                            key = "The root of data.json"
+                        else:
+                            key = " ➡ ".join([str(p).capitalize() if p == 'dataset' else str(p) for p in error.absolute_path])
+                        if key in grouped_errors.keys():
+                            grouped_errors[key].append(error)
+                        else:
+                            grouped_errors[key] = [error]
+                    for path, errors in grouped_errors.items():
+                        c.errors.append((
+                            '%s has a problem' % path,
+                            ['%s.' % e.message for e in errors]))
+                        for suberror in sorted(error.context, key=lambda e: e.schema_path):
+                            print(list(suberror.schema_path), suberror.message, sep=", ")
+
+                except Exception as e:
+                    c.errors.append(("Internal Error", ["Something bad happened: " + str(e)]))
+                if len(c.errors) == 0:
+                    c.errors.append(("No Errors", ["Great job!"]))
+        except AttributeError:
+            c.source_url = "No URL Provided"
+            c.errors.append(("Bad Request", ["Please send a post request with 'url' in the payload"]))
+        except AssertionError:
+            c.source_url = ""
+            c.errors.append(("URL is empty.", ["Please specify a URL in the box above."]))
 
     return render('datajsonvalidator.html')
 
@@ -401,5 +433,6 @@ datapusher.add_url_rule('/organization/<org_id>/unredacted.json',
                         view_func=generate_unredacted)
 datapusher.add_url_rule('/organization/<org_id>/draft.json',
                         view_func=generate_draft)
-datapusher.add_url_rule("/pod/validate",
-                        view_func=validator)
+validator_bp.add_url_rule("/dcat-us/validator",
+                          methods=['GET', 'POST'],
+                          view_func=validator)

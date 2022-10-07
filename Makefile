@@ -1,23 +1,21 @@
-CKAN_VERSION ?= 2.9
+CKAN_VERSION ?= 2.9.5
 COMPOSE_FILE ?= docker-compose.yml
 
 build: ## Build the docker containers
 	CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) build
 
 lint: ## Lint the code
-	@# our linting only runs with python3
-	@# TODO use CKAN_VERSION make variable once 2.8 is deprecated
-	CKAN_VERSION=2.9 docker-compose -f docker-compose.yml run --rm app flake8 . --count --show-source --statistics --exclude ckan
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f docker-compose.yml run --rm app flake8 ckanext --count --show-source --statistics --exclude ckan
 
 clean: ## Clean workspace and containers
 	find . -name *.pyc -delete
-	CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) down -v --remove-orphan
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) down -v --remove-orphan
 
 test: ## Run tests in a new container
-	CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) run --rm app ./test.sh
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) run --rm app ./test.sh
 
 up: ## Start the containers
-	CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) up
+	SERVICES_VERSION=$(CKAN_VERSION:%.5=%) CKAN_VERSION=$(CKAN_VERSION) docker-compose -f $(COMPOSE_FILE) up app
 
 
 .DEFAULT_GOAL := help

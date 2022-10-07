@@ -34,7 +34,7 @@ class DataJsonPlugin(p.SingletonPlugin):
 
         # Adds our local templates directory. It's smart. It knows it's
         # relative to the path of *this* file. Wow.
-        p.toolkit.add_template_directory(config, "templates")
+        p.toolkit.add_template_directory(config, "templates_datajson")
 
     @staticmethod
     def datajson_inventory_links_enabled():
@@ -47,3 +47,14 @@ class DataJsonPlugin(p.SingletonPlugin):
 
     def get_blueprint(self):
         return blueprint.datapusher
+
+
+class DataJsonValidatorPlugin(p.SingletonPlugin):
+    p.implements(p.interfaces.IConfigurer)
+    p.implements(p.IBlueprint)
+
+    def update_config(self, config):
+        p.toolkit.add_template_directory(config, "templates_validator")
+
+    def get_blueprint(self):
+        return blueprint.validator_bp
