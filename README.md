@@ -17,31 +17,30 @@ at http://ckanhostname/pod/validate.
 
 ## Features
 
-_TODO_
-
 Three plugins are provided.
 
-- **datajson** provides data.json export and DCAT-US metadata UI integration
-- **datajson_harvest** extends [ckanext-harvest](https://github.com/ckan/ckanext-harvest/) to collect metadata from
-  remote data.json sources
-- **cmsdatanav_harvest** _???_
+- [:heavy_check_mark:] **datajson** provides data.json export and DCAT-US metadata UI integration
+- [:heavy_check_mark:] **datajson_harvest** extends [ckanext-harvest](https://github.com/ckan/ckanext-harvest/)
+to collect metadata fromremote data.json sources
+- [:warning:] **cmsdatanav_harvest** extends [ckanext-harvest](https://github.com/ckan/ckanext-harvest/)
+to collect metadata from for the CMS Data Navigator catalog
+- [:heavy_check_mark:] **datajson_validator** provides a web form to validate dcat-us metadata data.json compliance.
 
 
 ## Usage
 
-
 ### Requirements
 
+All requirements are tracked `setup.py` when possible.  Some CKAN extensions are not on PyPI, so they 
+(and their dependencies) must be tracked in `requirements.txt`.
 - [ckanext-harvest](https://github.com/ckan/ckanext-harvest/)
 
-This extension is compatible with these versions of CKAN.
-
-CKAN version | Compatibility
------------- | -------------
-<=2.7        | no
-2.8          | yes
-2.9          | [in progress](https://github.com/GSA/datagov-ckan-multi/issues/564)
-
+CKAN version   | Compatibility
+-------------- | -------------
+<=2.7          | :x:
+2.8            | :warning:
+2.9.5          | :heavy_check_mark:
+2.9.6          | :heavy_check_mark:
 
 ### Installation
 
@@ -62,24 +61,10 @@ That's the plugin for /data.json output. To make the harvester available,
 also add:
 
 	ckan.plugins = (other plugins here...) harvest datajson_harvest
+	
+To make the datajson validator route and web form available, also add:
 
-If you're running CKAN via WSGI, we found a strange Python dependency
-bug. It might only affect development environments. The fix was to
-revise wsgi.py and add:
-
-	import ckanext
-
-before
-
-	from paste.deploy import loadapp
-
-Then restart your server and check out:
-
-	http://yourdomain.com/data.json
-	   and
-	http://yourdomain.com/data.jsonld
-	   and
-	http://yourdomain.com/pod/validate
+	ckan.plugins = (other plugins here...) datajson_validator
 
 
 ### Caching /data.json
@@ -174,26 +159,13 @@ extension. See the CKAN harvester README at https://github.com/okfn/ckanext-harv
 for how to do that. You'll set some configuration variables and then initialize the
 CKAN harvester plugin using:
 
-	paster --plugin=ckanext-harvest harvester initdb --config=/path/to/ckan.ini
+	ckan -c /path/to/ckan.ini harvester initdb
 
 Now you can set up a new DataJson harvester by visiting:
 
 	http://yourdomain.com/harvest
 
 And when configuring the data source, just choose "/data.json" as the source type.
-
-**The next paragraph assumes you're using my fork of the CKAN harvest extension
-at https://github.com/JoshData/ckanext-harvest**
-
-In the configuration field, you can put a YAML string containing defaults for fields
-that may not be set in the source data.json files, e.g. enter something like this:
-
-	defaults:
-	  Agency: Department of Health & Human Services
-	  Author: Substance Abuse & Mental Health Services Administration
-	  author_id: http://healthdata.gov/id/agency/samhsa
-
-This again is tied to the HealthData.gov metadata schema.
 
 
 ## Development
@@ -212,11 +184,11 @@ CKAN will start at [localhost:5000](http://localhost:5000/).
 
 Clean up any containers and volumes.
 
-    $ make down
+    $ make clean
 
 Open a shell to run commands in the container.
 
-    $ docker-compose exec ckan bash
+    $ docker-compose exec app /bin/bash
 
 If you're unfamiliar with docker-compose, see our
 [cheatsheet](https://github.com/GSA/datagov-deploy/wiki/Docker-Best-Practices#cheatsheet)
@@ -230,7 +202,7 @@ For additional make targets, see the help.
 ### Testing
 
 They follow the guidelines for [testing CKAN
-extensions](https://docs.ckan.org/en/2.8/extensions/testing-extensions.html#testing-extensions).
+extensions](https://docs.ckan.org/en/2.9/extensions/testing-extensions.html#testing-extensions).
 
 To run the extension tests, start the containers with `make up`, then:
 
@@ -243,13 +215,7 @@ Lint the code.
 
 ### Matrix builds
 
-The existing development environment assumes a full catalog.data.gov test setup. This makes
-it difficult to develop and test against new versions of CKAN (or really any
-dependency) because everything is tightly coupled and would require us to
-upgrade everything at once which doesn't really work. A new make target
-`test-new` is introduced with a new docker-compose file.
-
-The "new" development environment drops as many dependencies as possible. It is
+The test development environment drops as many dependencies as possible. It is
 not meant to have feature parity with
 [GSA/catalog.data.gov](https://github.com/GSA/catalog.data.gov/). Tests should
 mock external dependencies where possible.
@@ -258,20 +224,12 @@ In order to support multiple versions of CKAN, or even upgrade to new versions
 of CKAN, we support development and testing through the `CKAN_VERSION`
 environment variable.
 
-    $ make CKAN_VERSION=2.8 test
+    $ make CKAN_VERSION=2.9.5 test
     $ make CKAN_VERSION=2.9 test
-
-
-Legacy nose tests are still supported. You must specify `COMPOSE_FILE=docker-compose.legacy.yml`
-when interacting with this environment.
-
-    $ make COMPOSE_FILE=docker-compose.legacy.yml up
-    $ make COMPOSE_FILE=docker-compose.legacy.yml test-legacy
-
-Variable | Description | Default
--------- | ----------- | -------
-CKAN_VERSION | Version of CKAN to use. | 2.8
-COMPOSE_FILE | docker-compose service description file. | docker-compose.yml
+    
+Note: When testing patch versions of CKAN, the services may not have patch releases.
+So, take note of the `SERVICES_VERSION` variable which tracks the minor release to 
+pull for the `db` and `solr` images.
 
 
 ## Credit / Copying
