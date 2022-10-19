@@ -46,7 +46,10 @@ class DataJsonHarvester(DatasetHarvesterBase):
             try:
                 datasets = json.loads(data, 'cp1252')
             except BaseException:
-                datasets = json.loads(data, 'iso-8859-1')
+                try:
+                    datasets = json.loads(data, 'iso-8859-1')
+                except BaseException as e:
+                    self._save_gather_error("Error loading json with 'cp1252' and 'iso-8859-1': %s" % (e), harvest_job)
         except BaseException:
             # remove BOM
             datasets = json.loads(lstrip_bom(data))
