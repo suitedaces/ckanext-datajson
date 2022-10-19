@@ -317,7 +317,7 @@ class DatasetHarvesterBase(HarvesterBase):
                                     job=harvest_job, )
                 obj.save()
                 object_ids.append(obj.id)
-            except ckan.logic.ValidationError as e:
+            except ValidationError as e:
                 self._save_gather_error('Error validating package: %s' % (e), harvest_job)
 
         return object_ids
