@@ -1,7 +1,7 @@
 from ckan import model
 from ckan import plugins as p
 from ckan.model import Session, Package
-from ckan.logic import NotFound, get_action
+from ckan.logic import NotFound, get_action, ValidationError
 from ckan.logic.validators import name_validator
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib.munge import munge_title_to_name
@@ -310,12 +310,15 @@ class DatasetHarvesterBase(HarvesterBase):
             log.warn('deleting package %s (%s) because it is no longer in %s' % (pkg["name"],
                                                                                  pkg["id"],
                                                                                  harvest_job.source.url))
-            get_action('package_update')(self.context(), pkg)
-            obj = HarvestObject(guid=pkg_id,
-                                package_id=pkg["id"],
-                                job=harvest_job, )
-            obj.save()
-            object_ids.append(obj.id)
+            try:
+                get_action('package_update')(self.context(), pkg)
+                obj = HarvestObject(guid=pkg_id,
+                                    package_id=pkg["id"],
+                                    job=harvest_job, )
+                obj.save()
+                object_ids.append(obj.id)
+            except ckan.logic.ValidationError as e:
+                self._save_gather_error('Error validating package: %s' % (e), harvest_job)
 
         return object_ids
 
